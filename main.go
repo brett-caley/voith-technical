@@ -162,6 +162,15 @@ func handleRandom(w http.ResponseWriter, r *http.Request) {
 		Encode(map[string]interface{}{"response": randomDetails, "status": http.StatusOK})
 }
 
+func handleTitle(w http.ResponseWriter, r *http.Request) {
+	// Ensure JSON header is used
+	w.Header().Set("Content-Type", "application/json")
+
+	// Send
+	json.NewEncoder(w).
+		Encode(map[string]interface{}{"response": wikiCache.getTitle(), "status": http.StatusOK})
+}
+
 func main() {
 	// First step: initialize the data
 	wikiCache.init()
@@ -190,6 +199,9 @@ func main() {
 
 	// Handle the random route
 	subrouter.HandleFunc("/random", handleRandom)
+
+	// Handle the title route
+	subrouter.HandleFunc("/title", handleTitle)
 
 	// Start and serve
 	log.Fatal(http.ListenAndServe(":8080", router))
